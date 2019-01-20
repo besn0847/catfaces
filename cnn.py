@@ -1,4 +1,10 @@
-# import the necessary packages
+import cv2
+import pickle
+import argparse
+import numpy as np
+from PIL import Image
+from keras.models import load_model
+from keras.models import model_from_json
 from keras.models import Sequential
 from keras.layers.convolutional import Conv2D
 from keras.layers.convolutional import MaxPooling2D
@@ -6,78 +12,35 @@ from keras.layers.core import Activation
 from keras.layers.core import Flatten
 from keras.layers.core import Dense
 from keras.optimizers import Adam
-from sklearn.preprocessing import LabelBinarizer
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
-from PIL import Image
-from imutils import paths
-import numpy as np
-import argparse
-import os
- 
-# construct the argument parser and parse the arguments
+from keras.preprocessing.image import img_to_array
+
 ap = argparse.ArgumentParser()
-ap.add_argument("-d", "--dataset", type=str, default="3scenes",
-	help="path to directory containing the '3scenes' dataset")
+ap.add_argument("-m", "--model", required=True,
+	help="json file with trained model to use")
+ap.add_argument("-w", "--weights", required=True,
+	help="h5 file with trained model to use")
+ap.add_argument("-l", "--labels", required=True,
+	help="image labels")
+ap.add_argument("-i", "--image", required=True,
+	help="image to analyse")
 args = vars(ap.parse_args())
 
-# grab all image paths in the input dataset directory, then initialize
-# our list of images and corresponding class labels
-print("[INFO] loading images...")
-imagePaths = paths.list_images(args["dataset"])
-data = []
-labels = []
- 
-# loop over our input images
-for imagePath in imagePaths:
-	# load the input image from disk, resize it to 32x32 pixels, scale
-	# the pixel intensities to the range [0, 1], and then update our
-	# images list
-	image = Image.open(imagePath)
-	image = np.array(image.resize((32, 32))) / 255.0
-	data.append(image)
- 
-	# extract the class label from the file path and update the
-	# labels list
-	label = imagePath.split(os.path.sep)[-2]
-	labels.append(label)
+with open(args["model"], 'r') as f:
+	model = model_from_json(f.read())
 
-# encode the labels, converting them from strings to integers
-lb = LabelBinarizer()
-labels = lb.fit_transform(labels)
- 
-# perform a training and testing split, using 75% of the data for
-# training and 25% for evaluation
-(trainX, testX, trainY, testY) = train_test_split(np.array(data),
-	np.array(labels), test_size=0.25)
+model .load_weights(args["weights"])
+image = cv2.imread(args["image"])
+lb = pickle.loads(open(args["labels"], "rb").read())
 
-# define our Convolutional Neural Network architecture
-model = Sequential()
-model.add(Conv2D(8, (3, 3), padding="same", input_shape=(32, 32, 3)))
-model.add(Activation("relu"))
-model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-model.add(Conv2D(16, (3, 3), padding="same"))
-model.add(Activation("relu"))
-model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-model.add(Conv2D(32, (3, 3), padding="same"))
-model.add(Activation("relu"))
-model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-model.add(Flatten())
-model.add(Dense(3))
-model.add(Activation("softmax"))
+image = cv2.resize(image, (32, 32))
+image = image.astype("float") / 255.0
+image = img_to_array(image)
+image = np.expand_dims(image, axis=0)
 
-# train the model using the Adam optimizer
-print("[INFO] training network...")
-opt = Adam(lr=1e-3, decay=1e-3 / 50)
-model.compile(loss="categorical_crossentropy", optimizer=opt,
-	metrics=["accuracy"])
-H = model.fit(trainX, trainY, validation_data=(testX, testY),
-	epochs=50, batch_size=32)
- 
-# evaluate the network
-print("[INFO] evaluating network...")
-predictions = model.predict(testX, batch_size=32)
-print(classification_report(testY.argmax(axis=1),
-	predictions.argmax(axis=1), target_names=lb.classes_))
+probas = model.predict(image)[0]
 
-	
+idx = np.argmax(probas)
+label = lb.classes_[idx]
+proba = probas[idx]
+
+print("Cat: " + label + " with probability:" + str(proba))
