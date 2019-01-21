@@ -35,7 +35,7 @@ for imagePath in imagePaths:
 	# the pixel intensities to the range [0, 1], and then update our
 	# images list
 	image = Image.open(imagePath)
-	image = np.array(image.resize((32, 32))) / 255.0
+	image = np.array(image.resize((96, 96))) / 255.0
 	data.append(image)
  
 	# extract the class label from the file path and update the
@@ -54,18 +54,35 @@ labels = lb.fit_transform(labels)
 
 # 20/01/2019 definition architecture reseau de neurones
 model = Sequential()
-model.add(Conv2D(8, (3, 3), padding="same", input_shape=(32, 32, 3)))
+
+model.add(Conv2D(8, (3, 3), padding="same", input_shape=(96, 96, 3)))
 model.add(Activation("relu"))
 model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
 model.add(Conv2D(16, (3, 3), padding="same"))
 model.add(Activation("relu"))
 model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
 model.add(Conv2D(32, (3, 3), padding="same"))
 model.add(Activation("relu"))
 model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+model.add(Conv2D(64, (3, 3), padding="same"))
+model.add(Activation("relu"))
+model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+model.add(Conv2D(128, (3, 3), padding="same"))
+model.add(Activation("relu"))
+model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+model.add(Conv2D(256, (3, 3), padding="same"))
+model.add(Activation("relu"))
+model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
 model.add(Flatten())
-model.add(Dense(3))
+model.add(Dense(5))
 model.add(Activation("softmax"))
+model.summary()
 
 # train the model using the Adam optimizer
 print("[INFO] training network...")
