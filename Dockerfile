@@ -147,3 +147,11 @@ RUN rm -rf /bazel* && \
 	rm -rf /tmp/tensorflow* && \
 	rm  /root/tensorflow-* && \
 	rm -rf /root/.cache/bazel/ 
+
+RUN echo -e 'http://nl.alpinelinux.org/alpine/edge/testing' \
+	>> /etc/apk/repositories && \
+    apk update && \
+    apk add --update --no-cache \
+	clang hdf5 hdf5-dev && \ 
+    pip install pillow keras sklearn 
+
