@@ -24,8 +24,7 @@ RUN mkdir /data && \
 	mkdir /bootstrap && \
 	ln -s /usr/bin/python3.5 /usr/bin/python
 
-RUN pip3 install --upgrade pip && \
-	pip3 install --upgrade argparse numpy pillow tensorflow keras sklearn 
+RUN pip3 install --upgrade argparse numpy pillow tensorflow keras sklearn 
 
 ENV CMAKE_C_COMPILER /usr/bin/clang
 ENV CMAKE_CXX_COMPILER /usr/bin/clang++
