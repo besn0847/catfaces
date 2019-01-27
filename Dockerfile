@@ -1,16 +1,25 @@
 FROM balenalib/rpi-raspbian:stretch
 MAINTAINER franck@besnard.mobi
 
-RUN apt-get update \
-        && apt-get install -y --force-yes --no-install-recommends \
-        	cmake wget unzip clang libclang-dev \
-        	python3 python3-pip python3-dev \
-        	build-essential pkg-config libatlas-base-dev \
-        	libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev \
-        	libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
-        	libxvidcore-dev libx264-dev libgtk2.0-dev libgtk-3-dev gfortran
-        && apt-get autoremove \
-        && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+        apt-get install -y --force-yes --no-install-recommends \
+        	cmake wget unzip clang libclang-dev && \
+        apt-get install -y --force-yes --no-install-recommends \
+        	build-essential pkg-config && \
+        apt-get install -y --force-yes --no-install-recommends \
+        	libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev && \
+        apt-get install -y --force-yes --no-install-recommends \
+        	libavcodec-dev libavformat-dev libswscale-dev libv4l-dev && \
+        apt-get install -y --force-yes --no-install-recommends \
+        	libxvidcore-dev libx264-dev && \
+        apt-get install -y --force-yes --no-install-recommends \
+        	libgtk2.0-dev libgtk-3-dev &&\
+        apt-get install -y --force-yes --no-install-recommends \
+        	libatlas-base-dev gfortran && \
+        apt-get install -y --force-yes --no-install-recommends \
+        	python3 python3-pip python3-dev && \
+        apt-get autoremove && \
+        rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /data && \
         mkdir /conf && \
@@ -68,16 +77,18 @@ RUN rm -rf /opencv/ && \
         apt-get remove -y --force-yes \
         	cmake wget unzip clang libclang-dev \
         	python3-dev \
-        	build-essential pkg-config libatlas-base-dev \
-        	libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev \
-        	libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
-        	libxvidcore-dev libx264-dev libgtk2.0-dev libgtk-3-dev gfortran && \
-        apt-get install -y --force-yes --no-install-recommends \
+			build-essential pkg-config \
+			libjpeg-dev libtiff5-dev libjasper-dev libpng12-dev \
+			libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
+			libxvidcore-dev libx264-dev\ 
+			libgtk2.0-dev libgtk-3-dev \
+			libatlas-base-dev gfortran \
+			python3-dev	&& \
+ 		apt-get install -y --force-yes --no-install-recommends \
         	libatlas3-base \
         	libjpeg62-turbo libtiff5 libjasper-runtime libpng12-0 \
-        	libavcodec57 libavformat57 libswscale4 libv4l-0 \
-        	libxvidcore4 libx264-148 libgtk2.0-0 libgtk-3-0 && \
+			libxvidcore4 libx264-148 libgtk2.0-0 libgtk-3-0 \
+			libavcodec57 libavformat57 libswscale4 libv4l-0	&& \
 		apt-get autoremove && \
         rm -rf /var/lib/apt/lists/*
-
 
