@@ -17,9 +17,7 @@ RUN apt-get update && \
 	apt-get install -y --force-yes --no-install-recommends \
 		libatlas-base-dev gfortran && \
 	apt-get install -y --force-yes --no-install-recommends \
-		python3 python3-pip python3-dev && \
-	apt-get autoremove && \
-	rm -rf /var/lib/apt/lists/*
+		python3 python3-pip python3-dev
 
 RUN mkdir /data && \
 	mkdir /conf && \
