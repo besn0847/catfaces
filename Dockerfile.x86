@@ -1,0 +1,23 @@
+FROM besn0847/x86-tfcv2
+MAINTAINER franck@besnard.mobi
+
+RUN apt-get update && \
+        apt-get install -y --force-yes --no-install-recommends \
+                libhdf5-dev vim && \
+        apt-get autoremove && \
+        rm -rf /var/lib/apt/lists/* 
+
+RUN pip3 install flask
+
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+
+ADD cat_labels.bin /bootstrap/
+ADD cat_model_architecture.json /bootstrap/
+ADD cat_neural_model.h5 /bootstrap/
+ADD app.py /bootstrap/
+ADD startup.sh /
+
+EXPOSE 5000
+
+ENTRYPOINT ["/startup.sh"]
