@@ -18,6 +18,8 @@ ADD cat_neural_model.h5 /bootstrap/
 ADD app.py /bootstrap/
 ADD startup.sh /
 
+RUN chmod +x /startup.sh
+
 EXPOSE 5000
 
 ENTRYPOINT ["/startup.sh"]
