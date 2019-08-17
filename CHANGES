@@ -1,0 +1,15 @@
+****************************
+*** May 2019 - Catson v1 ***
+****************************
+	. First implementation of Catson based on 96 x 96 ConvNets with 3 microservices
+	. Trained on data collected in April and May 2019
+
+****************************
+*** August 2019 - Catson v2 ***
+****************************
+	. Second implementation of Catson based on 224 x 224 ConvNets with 3 microservices
+	. Trained on data collected in July 2019 and tested on data collected in August 2019
+	. Added 4 additional classes on top of 5 existing ones
+	. Created Jupyter notebooks to ease dev / test / debug
+	. Added PPT file to explain the overall concept
+	. Did not change actual microservices (only on live system)
